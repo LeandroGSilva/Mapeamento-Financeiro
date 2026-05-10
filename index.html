@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapeamento Financeiro</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F9F5EF;
+    --dark: #1A1A2E;
+    --gold: #C9A84C;
+    --gold-light: #E8D5A3;
+    --green: #2D6A4F;
+    --green-light: #52B788;
+    --red: #C1121F;
+    --gray: #6B6B6B;
+    --border: #DDD5C8;
+    --white: #FFFFFF;
+    --shadow: 0 4px 24px rgba(26,26,46,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--dark);
+    padding: 28px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--gold);
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .header-sub {
+    color: rgba(255,255,255,0.45);
+    font-size: 0.78rem;
+    margin-top: 2px;
+    font-weight: 300;
+  }
+
+  /* PROGRESS */
+  .progress-bar {
+    background: var(--dark);
+    padding: 0 40px 28px;
+    display: flex;
+    gap: 0;
+    align-items: center;
+  }
+  .step-item {
+    display: flex;
+    align-items: center;
+    flex: 1;
+  }
+  .step-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.4);
+    font-weight: 600;
+    transition: all 0.4s ease;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+  }
+  .step-dot.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--dark);
+  }
+  .step-dot.done {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+  }
+  .step-dot.done::after {
+    content: '✓';
+    font-size: 0.75rem;
+  }
+  .step-dot.done span { display: none; }
+  .step-line {
+    flex: 1;
+    height: 2px;
+    background: rgba(255,255,255,0.1);
+    margin: 0 4px;
+    transition: background 0.4s ease;
+  }
+  .step-line.done { background: var(--green); }
+  .step-label {
+    display: none;
+  }
+
+  /* MAIN */
+  .main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* SECTION CARD */
+  .section-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    animation: fadeUp 0.4s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--gold-light);
+    color: #7A5C1E;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--dark);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  .section-desc {
+    color: var(--gray);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 32px;
+    border-left: 3px solid var(--gold);
+    padding-left: 14px;
+  }
+
+  /* FORM ELEMENTS */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .form-grid.full { grid-template-columns: 1fr; }
+  .form-grid.thirds { grid-template-columns: 1fr 1fr 1fr; }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .field.span2 { grid-column: span 2; }
+  .field.span3 { grid-column: span 3; }
+
+  label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--dark);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  label .req { color: var(--gold); margin-left: 2px; }
+  label .hint {
+    font-weight: 400;
+    text-transform: none;
+    font-size: 0.75rem;
+    color: var(--gray);
+    letter-spacing: 0;
+    display: block;
+    margin-top: 1px;
+  }
+
+  input[type="text"], input[type="email"], input[type="tel"],
+  input[type="date"], input[type="number"], select, textarea {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+    color: var(--dark);
+    background: var(--cream);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    width: 100%;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+    background: white;
+  }
+  textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
+  select { cursor: pointer; }
+
+  /* RADIO / CHECKBOX GROUPS */
+  .radio-group, .check-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 2px;
+  }
+  .radio-group.horizontal {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .radio-opt, .check-opt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.88rem;
+    background: var(--cream);
+    user-select: none;
+  }
+  .radio-opt:hover, .check-opt:hover {
+    border-color: var(--gold);
+    background: #FDF8F0;
+  }
+  .radio-opt input, .check-opt input { display: none; }
+  .radio-opt.selected, .check-opt.selected {
+    border-color: var(--gold);
+    background: #FDF8F0;
+    color: #7A5C1E;
+    font-weight: 500;
+  }
+  .radio-indicator {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .radio-opt.selected .radio-indicator {
+    border-color: var(--gold);
+    background: var(--gold);
+  }
+  .radio-opt.selected .radio-indicator::after {
+    content: '';
+    width: 6px; height: 6px;
+    background: white;
+    border-radius: 50%;
+    display: block;
+  }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1.5px solid var(--border);
+    margin: 28px 0;
+  }
+
+  /* REPEATABLE ITEMS */
+  .repeat-container { display: flex; flex-direction: column; gap: 16px; }
+  .repeat-item {
+    background: var(--cream);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+  }
+  .repeat-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .repeat-item-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--gray);
+  }
+  .remove-btn {
+    background: none;
+    border: 1.5px solid #FFCCD5;
+    color: var(--red);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .remove-btn:hover { background: #FFECEE; }
+  .add-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px;
+    border: 2px dashed var(--gold-light);
+    border-radius: 12px;
+    background: none;
+    color: var(--gold);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+  .add-btn:hover {
+    border-color: var(--gold);
+    background: #FDF8F0;
+  }
+
+  /* NAVIGATION */
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 36px;
+    gap: 12px;
+  }
+  .btn-back {
+    background: none;
+    border: 1.5px solid var(--border);
+    color: var(--gray);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 12px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-back:hover { border-color: var(--dark); color: var(--dark); }
+  .btn-next {
+    background: var(--dark);
+    color: var(--gold);
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 14px 32px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0.01em;
+  }
+  .btn-next:hover { background: #2D2D4E; transform: translateY(-1px); }
+  .btn-submit {
+    background: var(--green);
+    color: white;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 14px 32px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-submit:hover { background: #245C42; transform: translateY(-1px); }
+
+  /* STEP COUNT */
+  .step-counter {
+    font-size: 0.8rem;
+    color: var(--gray);
+  }
+
+  /* SUCCESS */
+  .success-card {
+    text-align: center;
+    padding: 60px 40px;
+  }
+  .success-icon {
+    width: 72px; height: 72px;
+    background: var(--green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 2rem;
+  }
+  .success-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    margin-bottom: 12px;
+  }
+  .success-desc {
+    color: var(--gray);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* MONEY INPUT */
+  .money-wrap { position: relative; }
+  .money-prefix {
+    position: absolute;
+    left: 12px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.85rem;
+    color: var(--gray);
+    font-weight: 600;
+    pointer-events: none;
+  }
+  .money-wrap input { padding-left: 36px; }
+
+  /* PERCENT INPUT */
+  .pct-wrap { position: relative; }
+  .pct-suffix {
+    position: absolute;
+    right: 12px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.85rem;
+    color: var(--gray);
+    font-weight: 600;
+    pointer-events: none;
+  }
+  .pct-wrap input { padding-right: 36px; }
+
+  /* INFO BOX */
+  .info-box {
+    background: #EFF8F4;
+    border: 1.5px solid #B7DFD0;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 0.85rem;
+    color: #2D6A4F;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  .info-box strong { font-weight: 600; }
+
+  @media (max-width: 600px) {
+    .header { padding: 20px; }
+    .progress-bar { padding: 0 20px 20px; }
+    .main { padding: 24px 16px 60px; }
+    .section-card { padding: 24px 20px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-grid.thirds { grid-template-columns: 1fr; }
+    .field.span2, .field.span3 { grid-column: span 1; }
+    .section-title { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">Mapeamento Financeiro</div>
+    <div class="header-sub">Planejamento personalizado e confidencial</div>
+  </div>
+</div>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="main">
+  <div id="formContainer"></div>
+</div>
+
+<script>
+const STEPS = [
+  { label: 'Dados', icon: '1' },
+  { label: 'Família', icon: '2' },
+  { label: 'Objetivos', icon: '3' },
+  { label: 'Renda', icon: '4' },
+  { label: 'Patrimônio', icon: '5' },
+];
+
+let currentStep = 0;
+let formData = {};
+
+// ---- Render progress ----
+function renderProgress() {
+  const bar = document.getElementById('progressBar');
+  bar.innerHTML = STEPS.map((s, i) => {
+    let cls = i < currentStep ? 'done' : i === currentStep ? 'active' : '';
+    let line = i < STEPS.length - 1 ? `<div class="step-line ${i < currentStep ? 'done' : ''}"></div>` : '';
+    return `
+      <div class="step-item">
+        <div class="step-dot ${cls}">
+          <span>${s.icon}</span>
+        </div>
+        ${line}
+      </div>`;
+  }).join('');
+}
+
+// ---- Nav Buttons ----
+function navButtons(isLast = false) {
+  const total = STEPS.length;
+  return `
+    <div class="nav-buttons">
+      <div>
+        ${currentStep > 0 ? `<button class="btn-back" onclick="prevStep()">← Voltar</button>` : '<span></span>'}
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <span class="step-counter">${currentStep + 1} de ${total}</span>
+        ${isLast
+          ? `<button class="btn-submit" onclick="submitForm()">✓ Enviar Mapeamento</button>`
+          : `<button class="btn-next" onclick="nextStep()">Continuar →</button>`}
+      </div>
+    </div>`;
+}
+
+// ---- STEP 1: Dados Pessoais ----
+function renderStep0() {
+  return `
+    <div class="section-card">
+      <div class="section-badge">📋 Etapa 1 de 5</div>
+      <h2 class="section-title">Dados Pessoais</h2>
+      <p class="section-desc">Informações básicas para identificação e contato. Todas as informações são tratadas com total confidencialidade.</p>
+
+      <div class="form-grid">
+        <div class="field span2">
+          <label>Nome completo <span class="req">*</span></label>
+          <input type="text" id="nome" placeholder="Seu nome completo" value="${formData.nome||''}">
+        </div>
+        <div class="field">
+          <label>CPF <span class="req">*</span><span class="hint">Somente números</span></label>
+          <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" value="${formData.cpf||''}" oninput="maskCPF(this)">
+        </div>
+        <div class="field">
+          <label>Data de nascimento <span class="req">*</span></label>
+          <input type="date" id="nascimento" value="${formData.nascimento||''}">
+        </div>
+        <div class="field">
+          <label>Celular <span class="req">*</span></label>
+          <input type="tel" id="celular" placeholder="(11) 99999-9999" value="${formData.celular||''}" oninput="maskPhone(this)">
+        </div>
+        <div class="field">
+          <label>E-mail <span class="req">*</span></label>
+          <input type="email" id="email" placeholder="seu@email.com" value="${formData.email||''}">
+        </div>
+        <div class="field span2">
+          <label>Profissão</label>
+          <input type="text" id="profissao" placeholder="Ex: Empresário, Médico, Engenheiro..." value="${formData.profissao||''}">
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="field" style="margin-bottom:18px;">
+        <label>Estado civil <span class="req">*</span></label>
+        <div class="radio-group" id="estadoCivilGroup">
+          ${['Solteiro(a)','Casado(a) com brasileiro(a) nato(a)','Casado(a) com brasileiro(a) naturalizado(a)','Casado(a) com estrangeiro(a)','União Estável','Desquitado(a)','Divorciado(a)','Viúvo(a)']
+            .map(opt => `<label class="radio-opt ${formData.estadoCivil===opt?'selected':''}" onclick="selectRadio('estadoCivil','${opt}',this)">
+              <input type="radio" name="estadoCivil" value="${opt}">
+              <div class="radio-indicator"></div> ${opt}
+            </label>`).join('')}
+        </div>
+      </div>
+
+      <div class="field" style="margin-bottom:18px;">
+        <label>Regime da união <span class="req">*</span></label>
+        <div class="radio-group" id="regimeGroup">
+          ${['Não se aplica','Comunhão universal de bens','Comunhão parcial de bens','Separação total de bens','Participação final nos aquestos','Regime personalizado','Regime misto']
+            .map(opt => `<label class="radio-opt ${formData.regime===opt?'selected':''}" onclick="selectRadio('regime','${opt}',this)">
+              <input type="radio" name="regime" value="${opt}">
+              <div class="radio-indicator"></div> ${opt}
+            </label>`).join('')}
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Dupla cidadania? <span class="req">*</span></label>
+          <div class="radio-group horizontal">
+            ${['Sim','Não'].map(opt => `<label class="radio-opt ${formData.duplaCidadania===opt?'selected':''}" onclick="selectRadio('duplaCidadania','${opt}',this)" style="flex:1">
+              <input type="radio" name="duplaCidadania" value="${opt}">
+              <div class="radio-indicator"></div> ${opt}
+            </label>`).join('')}
+          </div>
+        </div>
+        <div class="field">
+          <label>Realizou/realizará saída fiscal? <span class="req">*</span></label>
+          <div class="radio-group horizontal">
+            ${['Sim','Não'].map(opt => `<label class="radio-opt ${formData.saidaFiscal===opt?'selected':''}" onclick="selectRadio('saidaFiscal','${opt}',this)" style="flex:1">
+              <input type="radio" name="saidaFiscal" value="${opt}">
+              <div class="radio-indicator"></div> ${opt}
+            </label>`).join('')}
+          </div>
+        </div>
+        <div class="field">
+          <label>Esporte de interesse</label>
+          <input type="text" id="esporte" placeholder="Ex: Tênis, Futebol, Golf..." value="${formData.esporte||''}">
+        </div>
+        <div class="field">
+          <label>Hobby de interesse</label>
+          <input type="text" id="hobby" placeholder="Ex: Viagens, Leitura, Culinária..." value="${formData.hobby||''}">
+        </div>
+      </div>
+
+      ${navButtons(false)}
+    </div>`;
+}
+
+// ---- STEP 2: Estrutura Familiar ----
+function renderStep1() {
+  if (!formData.familiares) formData.familiares = [];
+  return `
+    <div class="section-card">
+      <div class="section-badge">👨‍👩‍👧 Etapa 2 de 5</div>
+      <h2 class="section-title">Estrutura Familiar</h2>
+      <p class="section-desc">Informe os membros da família que participam ou impactam diretamente seu orçamento — cônjuge, filhos, pais ou outros dependentes financeiros. Não inclua você mesmo.</p>
+
+      <div class="repeat-container" id="familiaresContainer">
+        ${formData.familiares.map((f,i) => renderFamiliar(i,f)).join('')}
+      </div>
+      <button class="add-btn" onclick="addFamiliar()">+ Adicionar membro da família</button>
+
+      ${navButtons(false)}
+    </div>`;
+}
+
+function renderFamiliar(i, f={}) {
+  const parentescos = ['Cônjuge','Filho(a)','Pai','Mãe','Irmão(ã)','Avô(ó)','Primo(a)','Amigo(a)','Outro'];
+  return `
+    <div class="repeat-item" id="familiar-${i}">
+      <div class="repeat-item-header">
+        <span class="repeat-item-title">Membro ${i+1}</span>
+        <button class="remove-btn" onclick="removeFamiliar(${i})">Remover</button>
+      </div>
+      <div class="form-grid">
+        <div class="field span2">
+          <label>Nome completo</label>
+          <input type="text" placeholder="Nome do membro" value="${f.nome||''}" onchange="updateFamiliar(${i},'nome',this.value)">
+        </div>
+        <div class="field">
+          <label>Grau de parentesco</label>
+          <select onchange="updateFamiliar(${i},'parentesco',this.value)">
+            <option value="">Selecione...</option>
+            ${parentescos.map(p => `<option value="${p}" ${f.parentesco===p?'selected':''}>${p}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field">
+          <label>Data de nascimento</label>
+          <input type="date" value="${f.nascimento||''}" onchange="updateFamiliar(${i},'nascimento',this.value)">
+        </div>
+        <div class="field span2">
+          <label>Dependente para Imposto de Renda?</label>
+          <div class="radio-group horizontal">
+            ${['Sim','Não'].map(opt => `<label class="radio-opt ${f.dependenteIR===opt?'selected':''}" onclick="updateFamiliarRadio(${i},'dependenteIR','${opt}',this)" style="flex:1">
+              <div class="radio-indicator"></div> ${opt}
+            </label>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function addFamiliar() {
+  formData.familiares.push({});
+  rerenderSection();
+}
+function removeFamiliar(i) {
+  formData.familiares.splice(i,1);
+  rerenderSection();
+}
+function updateFamiliar(i,field,val) {
+  if (!formData.familiares[i]) formData.familiares[i]={};
+  formData.familiares[i][field]=val;
+}
+function updateFamiliarRadio(i,field,val,el) {
+  updateFamiliar(i,field,val);
+  el.closest('.radio-group').querySelectorAll('.radio-opt').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ---- STEP 3: Objetivos ----
+function renderStep2() {
+  if (!formData.objetivos) formData.objetivos = [];
+  return `
+    <div class="section-card">
+      <div class="section-badge">🎯 Etapa 3 de 5</div>
+      <h2 class="section-title">Objetivos de Vida</h2>
+      <p class="section-desc">Seus objetivos financeiros guiam toda a estratégia do planejamento. Preencha primeiro a aposentadoria (obrigatório) e depois adicione metas secundárias.</p>
+
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:16px;color:var(--dark);">🏖️ Aposentadoria</h3>
+      <div class="form-grid thirds">
+        <div class="field">
+          <label>Idade para aposentadoria <span class="req">*</span></label>
+          <input type="number" id="idadeAposent" placeholder="Ex: 65" min="40" max="90" value="${formData.idadeAposent||''}">
+        </div>
+        <div class="field">
+          <label>Renda mensal desejada <span class="req">*</span><span class="hint">Valor em R$</span></label>
+          <div class="money-wrap">
+            <span class="money-prefix">R$</span>
+            <input type="number" id="rendaAposent" placeholder="5.000" value="${formData.rendaAposent||''}">
+          </div>
+        </div>
+        <div class="field">
+          <label>Expectativa de vida <span class="req">*</span></label>
+          <input type="number" id="expectativa" placeholder="Ex: 90" min="60" max="120" value="${formData.expectativa||''}">
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:8px;color:var(--dark);">✨ Objetivos Secundários</h3>
+      <p style="font-size:0.85rem;color:var(--gray);margin-bottom:16px;">Compra de imóvel, carro, viagem, faculdade dos filhos, casamento, negócio próprio...</p>
+
+      <div class="repeat-container" id="objetivosContainer">
+        ${formData.objetivos.map((o,i) => renderObjetivo(i,o)).join('')}
+      </div>
+      <button class="add-btn" onclick="addObjetivo()">+ Adicionar objetivo</button>
+
+      ${navButtons(false)}
+    </div>`;
+}
+
+function renderObjetivo(i, o={}) {
+  return `
+    <div class="repeat-item" id="objetivo-${i}">
+      <div class="repeat-item-header">
+        <span class="repeat-item-title">Objetivo ${i+1}</span>
+        <button class="remove-btn" onclick="removeObjetivo(${i})">Remover</button>
+      </div>
+      <div class="form-grid">
+        <div class="field span2">
+          <label>Nome do objetivo</label>
+          <input type="text" placeholder="Ex: Casa própria, Faculdade, Viagem..." value="${o.nome||''}" onchange="updateObjetivo(${i},'nome',this.value)">
+        </div>
+        <div class="field">
+          <label>Idade para realizar <span class="hint">Sua idade no momento</span></label>
+          <input type="number" placeholder="Ex: 40" value="${o.idade||''}" onchange="updateObjetivo(${i},'idade',this.value)">
+        </div>
+        <div class="field">
+          <label>Forma de pagamento</label>
+          <select onchange="updateObjetivo(${i},'frequencia',this.value)">
+            <option value="">Selecione...</option>
+            <option value="A vista" ${o.frequencia==='A vista'?'selected':''}>À vista</option>
+            <option value="Parcelado" ${o.frequencia==='Parcelado'?'selected':''}>Parcelado</option>
+          </select>
+        </div>
+        ${o.frequencia==='Parcelado'?`
+        <div class="field">
+          <label>Valor da parcela</label>
+          <div class="money-wrap">
+            <span class="money-prefix">R$</span>
+            <input type="number" placeholder="2.000" value="${o.valorParcela||''}" onchange="updateObjetivo(${i},'valorParcela',this.value)">
+          </div>
+        </div>
+        <div class="field">
+          <label>Duração (anos)</label>
+          <input type="number" placeholder="Ex: 5" value="${o.anos||''}" onchange="updateObjetivo(${i},'anos',this.value)">
+        </div>`:`
+        <div class="field span2">
+          <label>Valor total estimado</label>
+          <div class="money-wrap">
+            <span class="money-prefix">R$</span>
+            <input type="number" placeholder="100.000" value="${o.valorTotal||''}" onchange="updateObjetivo(${i},'valorTotal',this.value)">
+          </div>
+        </div>`}
+      </div>
+    </div>`;
+}
+
+function addObjetivo() { formData.objetivos.push({}); rerenderSection(); }
+function removeObjetivo(i) { formData.objetivos.splice(i,1); rerenderSection(); }
+function updateObjetivo(i,field,val) {
+  if (!formData.objetivos[i]) formData.objetivos[i]={};
+  formData.objetivos[i][field]=val;
+  if(field==='frequencia') rerenderSection();
+}
+
+// ---- STEP 4: Rendas e Despesas ----
+function renderStep3() {
+  if (!formData.rendas) formData.rendas = [];
+  if (!formData.despesas) formData.despesas = [];
+  const categoriaRenda = ['Salário','Bônus','Aluguel','Rendimento','Venda','Pensão alimentícia','Comissão','Outros'];
+  const categoriaDespesa = ['Moradia','Alimentação','Transporte','Saúde','Educação','Lazer','Contas fixas','Dívidas','Impostos','Outros'];
+
+  const membros = ['Você', ...(formData.familiares||[]).map(f => f.nome||'Familiar').filter(Boolean)];
+
+  return `
+    <div class="section-card">
+      <div class="section-badge">💰 Etapa 4 de 5</div>
+      <h2 class="section-title">Rendas & Despesas</h2>
+      <p class="section-desc">Mapeie o orçamento mensal da família. Para cada membro, vincule suas fontes de renda e seus gastos mensais. Estimativas são bem-vindas.</p>
+
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:16px;color:var(--dark);">📈 Fontes de Renda</h3>
+      <div class="repeat-container" id="rendasContainer">
+        ${formData.rendas.map((r,i) => renderRenda(i,r,membros,categoriaRenda)).join('')}
+      </div>
+      <button class="add-btn" onclick="addRenda()">+ Adicionar fonte de renda</button>
+
+      <hr class="divider">
+
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:16px;color:var(--dark);">📉 Despesas Mensais</h3>
+      <div class="repeat-container" id="despesasContainer">
+        ${formData.despesas.map((d,i) => renderDespesa(i,d,membros,categoriaDespesa)).join('')}
+      </div>
+      <button class="add-btn" onclick="addDespesa()">+ Adicionar despesa</button>
+
+      ${navButtons(false)}
+    </div>`;
+}
+
+function renderRenda(i, r={}, membros=[], cats=[]) {
+  return `
+    <div class="repeat-item" id="renda-${i}">
+      <div class="repeat-item-header">
+        <span class="repeat-item-title">Renda ${i+1}</span>
+        <button class="remove-btn" onclick="removeRenda(${i})">Remover</button>
+      </div>
+      <div class="form-grid thirds">
+        <div class="field">
+          <label>Responsável</label>
+          <select onchange="updateRenda(${i},'responsavel',this.value)">
+            <option value="">Selecione...</option>
+            ${membros.map(m=>`<option value="${m}" ${r.responsavel===m?'selected':''}>${m}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field">
+          <label>Categoria</label>
+          <select onchange="updateRenda(${i},'categoria',this.value)">
+            <option value="">Selecione...</option>
+            ${cats.map(c=>`<option value="${c}" ${r.categoria===c?'selected':''}>${c}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field">
+          <label>Valor líquido mensal</label>
+          <div class="money-wrap">
+            <span class="money-prefix">R$</span>
+            <input type="number" placeholder="0,00" value="${r.valor||''}" onchange="updateRenda(${i},'valor',this.value)">
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderDespesa(i, d={}, membros=[], cats=[]) {
+  return `
+    <div class="repeat-item" id="despesa-${i}">
+      <div class="repeat-item-header">
+        <span class="repeat-item-title">Despesa ${i+1}</span>
+        <button class="remove-btn" onclick="removeDespesa(${i})">Remover</button>
+      </div>
+      <div class="form-grid thirds">
+        <div class="field">
+          <label>Responsável</label>
+          <select onchange="updateDespesa(${i},'responsavel',this.value)">
+            <option value="">Selecione...</option>
+            ${membros.map(m=>`<option value="${m}" ${d.responsavel===m?'selected':''}>${m}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field">
+          <label>Categoria</label>
+          <select onchange="updateDespesa(${i},'categoria',this.value)">
+            <option value="">Selecione...</option>
+            ${cats.map(c=>`<option value="${c}" ${d.categoria===c?'selected':''}>${c}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field">
+          <label>Valor mensal</label>
+          <div class="money-wrap">
+            <span class="money-prefix">R$</span>
+            <input type="number" placeholder="0,00" value="${d.valor||''}" onchange="updateDespesa(${i},'valor',this.value)">
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function addRenda() { formData.rendas.push({}); rerenderSection(); }
+function removeRenda(i) { formData.rendas.splice(i,1); rerenderSection(); }
+function updateRenda(i,f,v) { if(!formData.rendas[i]) formData.rendas[i]={}; formData.rendas[i][f]=v; }
+function addDespesa() { formData.despesas.push({}); rerenderSection(); }
+function removeDespesa(i) { formData.despesas.splice(i,1); rerenderSection(); }
+function updateDespesa(i,f,v) { if(!formData.despesas[i]) formData.despesas[i]={}; formData.despesas[i][f]=v; }
+
+// ---- STEP 5: Patrimônio ----
+function renderStep4() {
+  if (!formData.invNacionais) formData.invNacionais = [];
+  if (!formData.invGlobais) formData.invGlobais = [];
+  if (!formData.imoveis) formData.imoveis = [];
+  if (!formData.veiculos) formData.veiculos = [];
+  if (!formData.participacoes) formData.participacoes = [];
+  const tiposInv = ['Tesouro Direto','CDB','LCI/LCA','Poupança','Ações','Fundos','Previdência','ETF','Outros'];
+
+  return `
+    <div class="section-card">
+      <div class="section-badge">🏛️ Etapa 5 de 5</div>
+      <h2 class="section-title">Bens & Patrimônio</h2>
+      <p class="section-desc">Mapeie seus ativos: investimentos, imóveis, veículos e participações societárias. Use valores aproximados de mercado.</p>
+
+      <!-- INVESTIMENTOS NACIONAIS -->
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.05rem;margin-bottom:12px;">🇧🇷 Investimentos Nacionais (outras instituições)</h3>
+      <div class="repeat-container" id="invNacionaisContainer">
+        ${formData.invNacionais.map((inv,i) => `
+          <div class="repeat-item" id="invN-${i}">
+            <div class="repeat-item-header">
+              <span class="repeat-item-title">Investimento ${i+1}</span>
+              <button class="remove-btn" onclick="removeInvN(${i})">Remover</button>
+            </div>
+            <div class="form-grid thirds">
+              <div class="field">
+                <label>Data de referência</label>
+                <input type="month" value="${inv.data||''}" onchange="updateInvN(${i},'data',this.value)">
+              </div>
+              <div class="field">
+                <label>Tipo de investimento</label>
+                <select onchange="updateInvN(${i},'tipo',this.value)">
+                  <option value="">Selecione...</option>
+                  ${tiposInv.map(t=>`<option value="${t}" ${inv.tipo===t?'selected':''}>${t}</option>`).join('')}
+                </select>
+              </div>
+              <div class="field">
+                <label>Instituição financeira</label>
+                <input type="text" placeholder="Banco, corretora..." value="${inv.inst||''}" onchange="updateInvN(${i},'inst',this.value)">
+              </div>
+              <div class="field span3">
+                <label>Patrimônio investido</label>
+                <div class="money-wrap">
+                  <span class="money-prefix">R$</span>
+                  <input type="number" placeholder="0,00" value="${inv.valor||''}" onchange="updateInvN(${i},'valor',this.value)">
+                </div>
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>
+      <button class="add-btn" onclick="addInvN()">+ Adicionar investimento nacional</button>
+
+      <hr class="divider">
+
+      <!-- INVESTIMENTOS GLOBAIS -->
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.05rem;margin-bottom:8px;">🌎 Investimentos Globais (outras instituições)</h3>
+      <p style="font-size:0.83rem;color:var(--gray);margin-bottom:12px;">A soma dos percentuais deve totalizar 100%.</p>
+      <div class="repeat-container" id="invGlobaisContainer">
+        ${formData.invGlobais.map((inv,i) => `
+          <div class="repeat-item" id="invG-${i}">
+            <div class="repeat-item-header">
+              <span class="repeat-item-title">Investimento Global ${i+1}</span>
+              <button class="remove-btn" onclick="removeInvG(${i})">Remover</button>
+            </div>
+            <div class="form-grid">
+              <div class="field">
+                <label>Data de referência</label>
+                <input type="month" value="${inv.data||''}" onchange="updateInvG(${i},'data',this.value)">
+              </div>
+              <div class="field">
+                <label>Instituição financeira</label>
+                <input type="text" placeholder="Ex: Interactive Brokers" value="${inv.inst||''}" onchange="updateInvG(${i},'inst',this.value)">
+              </div>
+              <div class="field span2">
+                <label>Patrimônio investido (US$)</label>
+                <div class="money-wrap">
+                  <span class="money-prefix">US$</span>
+                  <input type="number" placeholder="0,00" value="${inv.valor||''}" onchange="updateInvG(${i},'valor',this.value)">
+                </div>
+              </div>
+            </div>
+            <div class="form-grid thirds" style="margin-top:12px;">
+              ${['CDs','Mutual Funds','Treasury','Bonds','Equities','Cash','Structured Notes'].map(cat => `
+                <div class="field">
+                  <label>${cat}</label>
+                  <div class="pct-wrap">
+                    <input type="number" min="0" max="100" placeholder="0" value="${inv[cat]||''}" onchange="updateInvG(${i},'${cat}',this.value)">
+                    <span class="pct-suffix">%</span>
+                  </div>
+                </div>`).join('')}
+            </div>
+          </div>`).join('')}
+      </div>
+      <button class="add-btn" onclick="addInvG()">+ Adicionar investimento global</button>
+
+      <hr class="divider">
+
+      <!-- IMÓVEIS -->
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.05rem;margin-bottom:12px;">🏠 Imóveis</h3>
+      <div class="repeat-container" id="imoveisContainer">
+        ${formData.imoveis.map((im,i) => `
+          <div class="repeat-item" id="imovel-${i}">
+            <div class="repeat-item-header">
+              <span class="repeat-item-title">Imóvel ${i+1}</span>
+              <button class="remove-btn" onclick="removeImovel(${i})">Remover</button>
+            </div>
+            <div class="form-grid">
+              <div class="field span2">
+                <label>Localização (Estado e Cidade)</label>
+                <input type="text" placeholder="Ex: SP - São Paulo" value="${im.local||''}" onchange="updateImovel(${i},'local',this.value)">
+              </div>
+              <div class="field">
+                <label>Valor estimado de mercado</label>
+                <div class="money-wrap">
+                  <span class="money-prefix">R$</span>
+                  <input type="number" placeholder="0,00" value="${im.valor||''}" onchange="updateImovel(${i},'valor',this.value)">
+                </div>
+              </div>
+              <div class="field">
+                <label>Está financiado?</label>
+                <select onchange="updateImovel(${i},'financiado',this.value)">
+                  <option value="">Selecione...</option>
+                  <option value="Não" ${im.financiado==='Não'?'selected':''}>Não</option>
+                  <option value="Sim" ${im.financiado==='Sim'?'selected':''}>Sim</option>
+                </select>
+              </div>
+              ${im.financiado==='Sim'?`
+              <div class="field span2">
+                <label>Data de quitação prevista</label>
+                <input type="month" value="${im.quitacao||''}" onchange="updateImovel(${i},'quitacao',this.value)">
+              </div>`:''}
+              <div class="field">
+                <label>Adquirido após a união?</label>
+                <select onchange="updateImovel(${i},'aposUniao',this.value)">
+                  <option value="">Selecione...</option>
+                  <option value="Sim" ${im.aposUniao==='Sim'?'selected':''}>Sim</option>
+                  <option value="Não" ${im.aposUniao==='Não'?'selected':''}>Não</option>
+                  <option value="Não se aplica" ${im.aposUniao==='Não se aplica'?'selected':''}>Não se aplica</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Sua participação (%)</label>
+                <div class="pct-wrap">
+                  <input type="number" min="0" max="100" placeholder="100" value="${im.participacao||''}" onchange="updateImovel(${i},'participacao',this.value)">
+                  <span class="pct-suffix">%</span>
+                </div>
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>
+      <button class="add-btn" onclick="addImovel()">+ Adicionar imóvel</button>
+
+      <hr class="divider">
+
+      <!-- VEÍCULOS -->
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.05rem;margin-bottom:12px;">🚗 Veículos</h3>
+      <div class="repeat-container" id="veiculosContainer">
+        ${formData.veiculos.map((v,i) => `
+          <div class="repeat-item" id="veiculo-${i}">
+            <div class="repeat-item-header">
+              <span class="repeat-item-title">Veículo ${i+1}</span>
+              <button class="remove-btn" onclick="removeVeiculo(${i})">Remover</button>
+            </div>
+            <div class="form-grid">
+              <div class="field span2">
+                <label>Descrição</label>
+                <input type="text" placeholder="Ex: Honda Civic 2022, Preto" value="${v.desc||''}" onchange="updateVeiculo(${i},'desc',this.value)">
+              </div>
+              <div class="field">
+                <label>Tipo</label>
+                <select onchange="updateVeiculo(${i},'tipo',this.value)">
+                  <option value="">Selecione...</option>
+                  ${['Carro','Moto','Caminhão','Trator','Ônibus','Van','Outro'].map(t=>`<option value="${t}" ${v.tipo===t?'selected':''}>${t}</option>`).join('')}
+                </select>
+              </div>
+              <div class="field">
+                <label>Valor estimado</label>
+                <div class="money-wrap">
+                  <span class="money-prefix">R$</span>
+                  <input type="number" placeholder="0,00" value="${v.valor||''}" onchange="updateVeiculo(${i},'valor',this.value)">
+                </div>
+              </div>
+              <div class="field">
+                <label>Financiado?</label>
+                <select onchange="updateVeiculo(${i},'financiado',this.value)">
+                  <option value="">Selecione...</option>
+                  <option value="Não" ${v.financiado==='Não'?'selected':''}>Não</option>
+                  <option value="Sim" ${v.financiado==='Sim'?'selected':''}>Sim</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Adquirido após a união?</label>
+                <select onchange="updateVeiculo(${i},'aposUniao',this.value)">
+                  <option value="">Selecione...</option>
+                  <option value="Sim" ${v.aposUniao==='Sim'?'selected':''}>Sim</option>
+                  <option value="Não" ${v.aposUniao==='Não'?'selected':''}>Não</option>
+                  <option value="Não se aplica" ${v.aposUniao==='Não se aplica'?'selected':''}>Não se aplica</option>
+                </select>
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>
+      <button class="add-btn" onclick="addVeiculo()">+ Adicionar veículo</button>
+
+      <hr class="divider">
+
+      <!-- PARTICIPAÇÕES -->
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.05rem;margin-bottom:12px;">🏢 Participações Societárias</h3>
+      <div class="repeat-container" id="participacoesContainer">
+        ${formData.participacoes.map((p,i) => `
+          <div class="repeat-item" id="part-${i}">
+            <div class="repeat-item-header">
+              <span class="repeat-item-title">Empresa ${i+1}</span>
+              <button class="remove-btn" onclick="removeParticipacao(${i})">Remover</button>
+            </div>
+            <div class="form-grid">
+              <div class="field">
+                <label>Nome da empresa</label>
+                <input type="text" placeholder="Nome da empresa" value="${p.nome||''}" onchange="updateParticipacao(${i},'nome',this.value)">
+              </div>
+              <div class="field">
+                <label>CNPJ</label>
+                <input type="text" placeholder="00.000.000/0001-00" value="${p.cnpj||''}" onchange="updateParticipacao(${i},'cnpj',this.value)">
+              </div>
+              <div class="field">
+                <label>Valor estimado da empresa</label>
+                <div class="money-wrap">
+                  <span class="money-prefix">R$</span>
+                  <input type="number" placeholder="0,00" value="${p.valor||''}" onchange="updateParticipacao(${i},'valor',this.value)">
+                </div>
+              </div>
+              <div class="field">
+                <label>Sua participação (%)</label>
+                <div class="pct-wrap">
+                  <input type="number" min="0" max="100" placeholder="50" value="${p.participacao||''}" onchange="updateParticipacao(${i},'participacao',this.value)">
+                  <span class="pct-suffix">%</span>
+                </div>
+              </div>
+              <div class="field span2">
+                <label>Participação adquirida após a união?</label>
+                <select onchange="updateParticipacao(${i},'aposUniao',this.value)">
+                  <option value="">Selecione...</option>
+                  <option value="Sim" ${p.aposUniao==='Sim'?'selected':''}>Sim</option>
+                  <option value="Não" ${p.aposUniao==='Não'?'selected':''}>Não</option>
+                  <option value="Não se aplica" ${p.aposUniao==='Não se aplica'?'selected':''}>Não se aplica</option>
+                </select>
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>
+      <button class="add-btn" onclick="addParticipacao()">+ Adicionar participação societária</button>
+
+      ${navButtons(true)}
+    </div>`;
+}
+
+// Patrimônio helpers
+function addInvN() { formData.invNacionais.push({}); rerenderSection(); }
+function removeInvN(i) { formData.invNacionais.splice(i,1); rerenderSection(); }
+function updateInvN(i,f,v) { if(!formData.invNacionais[i]) formData.invNacionais[i]={}; formData.invNacionais[i][f]=v; }
+function addInvG() { formData.invGlobais.push({}); rerenderSection(); }
+function removeInvG(i) { formData.invGlobais.splice(i,1); rerenderSection(); }
+function updateInvG(i,f,v) { if(!formData.invGlobais[i]) formData.invGlobais[i]={}; formData.invGlobais[i][f]=v; }
+function addImovel() { formData.imoveis.push({}); rerenderSection(); }
+function removeImovel(i) { formData.imoveis.splice(i,1); rerenderSection(); }
+function updateImovel(i,f,v) { if(!formData.imoveis[i]) formData.imoveis[i]={}; formData.imoveis[i][f]=v; if(f==='financiado') rerenderSection(); }
+function addVeiculo() { formData.veiculos.push({}); rerenderSection(); }
+function removeVeiculo(i) { formData.veiculos.splice(i,1); rerenderSection(); }
+function updateVeiculo(i,f,v) { if(!formData.veiculos[i]) formData.veiculos[i]={}; formData.veiculos[i][f]=v; }
+function addParticipacao() { formData.participacoes.push({}); rerenderSection(); }
+function removeParticipacao(i) { formData.participacoes.splice(i,1); rerenderSection(); }
+function updateParticipacao(i,f,v) { if(!formData.participacoes[i]) formData.participacoes[i]={}; formData.participacoes[i][f]=v; }
+
+// ---- Collect step 0 ----
+function collectStep0() {
+  formData.nome = document.getElementById('nome')?.value || '';
+  formData.cpf = document.getElementById('cpf')?.value || '';
+  formData.nascimento = document.getElementById('nascimento')?.value || '';
+  formData.celular = document.getElementById('celular')?.value || '';
+  formData.email = document.getElementById('email')?.value || '';
+  formData.profissao = document.getElementById('profissao')?.value || '';
+  formData.esporte = document.getElementById('esporte')?.value || '';
+  formData.hobby = document.getElementById('hobby')?.value || '';
+}
+
+function collectStep2() {
+  formData.idadeAposent = document.getElementById('idadeAposent')?.value || '';
+  formData.rendaAposent = document.getElementById('rendaAposent')?.value || '';
+  formData.expectativa = document.getElementById('expectativa')?.value || '';
+}
+
+// ---- Radio selection ----
+function selectRadio(field, value, el) {
+  formData[field] = value;
+  el.closest('.radio-group').querySelectorAll('.radio-opt').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ---- Masks ----
+function maskCPF(el) {
+  let v = el.value.replace(/\D/g,'');
+  if(v.length>11) v=v.slice(0,11);
+  v = v.replace(/(\d{3})(\d)/,'$1.$2');
+  v = v.replace(/(\d{3})(\d)/,'$1.$2');
+  v = v.replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+  el.value = v;
+}
+function maskPhone(el) {
+  let v = el.value.replace(/\D/g,'');
+  if(v.length>11) v=v.slice(0,11);
+  v = v.replace(/^(\d{2})(\d)/,'($1) $2');
+  v = v.replace(/(\d{5})(\d)/,'$1-$2');
+  el.value = v;
+}
+
+// ---- Navigation ----
+function saveCurrentStep() {
+  if(currentStep===0) collectStep0();
+  if(currentStep===2) collectStep2();
+}
+
+function nextStep() {
+  saveCurrentStep();
+  if(currentStep < STEPS.length - 1) {
+    currentStep++;
+    rerenderSection();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+}
+
+function prevStep() {
+  saveCurrentStep();
+  if(currentStep > 0) {
+    currentStep--;
+    rerenderSection();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+}
+
+function rerenderSection() {
+  renderProgress();
+  const container = document.getElementById('formContainer');
+  const renders = [renderStep0, renderStep1, renderStep2, renderStep3, renderStep4];
+  container.innerHTML = renders[currentStep]();
+}
+
+function formatMoney(v) {
+  if(!v) return 'Não informado';
+  return 'R$ ' + Number(v).toLocaleString('pt-BR', {minimumFractionDigits:2});
+}
+
+function submitForm() {
+  saveCurrentStep();
+
+  const d = formData;
+  let msg = '';
+
+  msg += '🗂️ *MAPEAMENTO FINANCEIRO*\n';
+  msg += '━━━━━━━━━━━━━━━━━━━━━━\n\n';
+
+  // Dados pessoais
+  msg += '👤 *DADOS PESSOAIS*\n';
+  msg += `• Nome: ${d.nome||'—'}\n`;
+  msg += `• CPF: ${d.cpf||'—'}\n`;
+  msg += `• Nascimento: ${d.nascimento||'—'}\n`;
+  msg += `• Celular: ${d.celular||'—'}\n`;
+  msg += `• E-mail: ${d.email||'—'}\n`;
+  msg += `• Profissão: ${d.profissao||'—'}\n`;
+  msg += `• Estado civil: ${d.estadoCivil||'—'}\n`;
+  msg += `• Regime da união: ${d.regime||'—'}\n`;
+  msg += `• Dupla cidadania: ${d.duplaCidadania||'—'}\n`;
+  msg += `• Saída fiscal: ${d.saidaFiscal||'—'}\n`;
+  msg += `• Esporte: ${d.esporte||'—'}\n`;
+  msg += `• Hobby: ${d.hobby||'—'}\n\n`;
+
+  // Família
+  msg += '👨‍👩‍👧 *ESTRUTURA FAMILIAR*\n';
+  if(d.familiares && d.familiares.length > 0) {
+    d.familiares.forEach((f,i) => {
+      msg += `• Membro ${i+1}: ${f.nome||'—'} | ${f.parentesco||'—'} | Nasc: ${f.nascimento||'—'} | Dep. IR: ${f.dependenteIR||'—'}\n`;
+    });
+  } else { msg += '• Nenhum membro informado\n'; }
+  msg += '\n';
+
+  // Objetivos
+  msg += '🎯 *OBJETIVOS*\n';
+  msg += `• Aposentadoria aos: ${d.idadeAposent||'—'} anos\n`;
+  msg += `• Renda desejada: ${formatMoney(d.rendaAposent)}/mês\n`;
+  msg += `• Expectativa de vida: ${d.expectativa||'—'} anos\n`;
+  if(d.objetivos && d.objetivos.length > 0) {
+    msg += `• Objetivos secundários:\n`;
+    d.objetivos.forEach((o,i) => {
+      msg += `  ${i+1}. ${o.nome||'—'} | Idade: ${o.idade||'—'} | ${o.frequencia||'—'}`;
+      if(o.frequencia==='Parcelado') msg += ` | Parcela: ${formatMoney(o.valorParcela)} x ${o.anos||'—'} anos`;
+      else if(o.valorTotal) msg += ` | Total: ${formatMoney(o.valorTotal)}`;
+      msg += '\n';
+    });
+  }
+  msg += '\n';
+
+  // Rendas
+  msg += '📈 *RENDAS MENSAIS*\n';
+  if(d.rendas && d.rendas.length > 0) {
+    d.rendas.forEach((r,i) => {
+      msg += `• ${r.responsavel||'—'} | ${r.categoria||'—'} | ${formatMoney(r.valor)}\n`;
+    });
+  } else { msg += '• Nenhuma renda informada\n'; }
+  msg += '\n';
+
+  // Despesas
+  msg += '📉 *DESPESAS MENSAIS*\n';
+  if(d.despesas && d.despesas.length > 0) {
+    d.despesas.forEach((e,i) => {
+      msg += `• ${e.responsavel||'—'} | ${e.categoria||'—'} | ${formatMoney(e.valor)}\n`;
+    });
+  } else { msg += '• Nenhuma despesa informada\n'; }
+  msg += '\n';
+
+  // Investimentos nacionais
+  msg += '🇧🇷 *INVESTIMENTOS NACIONAIS*\n';
+  if(d.invNacionais && d.invNacionais.length > 0) {
+    d.invNacionais.forEach((inv,i) => {
+      msg += `• ${inv.tipo||'—'} | ${inv.inst||'—'} | ${formatMoney(inv.valor)} | Ref: ${inv.data||'—'}\n`;
+    });
+  } else { msg += '• Nenhum informado\n'; }
+  msg += '\n';
+
+  // Investimentos globais
+  msg += '🌎 *INVESTIMENTOS GLOBAIS*\n';
+  if(d.invGlobais && d.invGlobais.length > 0) {
+    d.invGlobais.forEach((inv,i) => {
+      msg += `• ${inv.inst||'—'} | US$ ${inv.valor||'—'} | Ref: ${inv.data||'—'}\n`;
+      const cats = ['CDs','Mutual Funds','Treasury','Bonds','Equities','Cash','Structured Notes'];
+      const pcts = cats.filter(c=>inv[c]).map(c=>`${c}: ${inv[c]}%`).join(', ');
+      if(pcts) msg += `  Alocação: ${pcts}\n`;
+    });
+  } else { msg += '• Nenhum informado\n'; }
+  msg += '\n';
+
+  // Imóveis
+  msg += '🏠 *IMÓVEIS*\n';
+  if(d.imoveis && d.imoveis.length > 0) {
+    d.imoveis.forEach((im,i) => {
+      msg += `• ${im.local||'—'} | ${formatMoney(im.valor)} | Financiado: ${im.financiado||'—'} | Participação: ${im.participacao||'—'}%\n`;
+    });
+  } else { msg += '• Nenhum informado\n'; }
+  msg += '\n';
+
+  // Veículos
+  msg += '🚗 *VEÍCULOS*\n';
+  if(d.veiculos && d.veiculos.length > 0) {
+    d.veiculos.forEach((v,i) => {
+      msg += `• ${v.desc||'—'} (${v.tipo||'—'}) | ${formatMoney(v.valor)} | Financiado: ${v.financiado||'—'}\n`;
+    });
+  } else { msg += '• Nenhum informado\n'; }
+  msg += '\n';
+
+  // Participações
+  msg += '🏢 *PARTICIPAÇÕES SOCIETÁRIAS*\n';
+  if(d.participacoes && d.participacoes.length > 0) {
+    d.participacoes.forEach((p,i) => {
+      msg += `• ${p.nome||'—'} | CNPJ: ${p.cnpj||'—'} | ${formatMoney(p.valor)} | ${p.participacao||'—'}%\n`;
+    });
+  } else { msg += '• Nenhuma informada\n'; }
+
+  msg += '\n━━━━━━━━━━━━━━━━━━━━━━\n';
+  msg += '✅ Mapeamento financeiro concluído.';
+
+  const phone = '5511999250282';
+  const url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
+  window.open(url, '_blank');
+
+  document.getElementById('formContainer').innerHTML = `
+    <div class="section-card success-card">
+      <div class="success-icon">✓</div>
+      <h2 class="success-title">Mapeamento enviado!</h2>
+      <p class="success-desc">O WhatsApp foi aberto com todas as suas informações organizadas e já enviadas para o seu assessor.<br><br>Em breve você receberá um retorno. 😊</p>
+    </div>`;
+  document.getElementById('progressBar').innerHTML = '';
+}
+
+// ---- Init ----
+renderProgress();
+rerenderSection();
+</script>
+</body>
+</html>
