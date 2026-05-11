@@ -7,17 +7,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --cream: #F9F5EF;
-    --dark: #1A1A2E;
-    --gold: #C9A84C;
-    --gold-light: #E8D5A3;
-    --green: #2D6A4F;
-    --green-light: #52B788;
-    --red: #C1121F;
+    --cream: #F5F4F2;
+    --dark: #1A1A1A;
+    --gold: #CC4E28;
+    --gold-light: #F2C4B2;
+    --green: #CC4E28;
+    --green-light: #E8724F;
+    --red: #A83218;
     --gray: #6B6B6B;
-    --border: #DDD5C8;
+    --border: #E2DFDB;
     --white: #FFFFFF;
-    --shadow: 0 4px 24px rgba(26,26,46,0.08);
+    --shadow: 0 4px 24px rgba(0,0,0,0.10);
+    --wflow-dark: #1A1A1A;
+    --wflow-gold: #CC4E28;
+    --wflow-orange: #CC4E28;
+    --wflow-orange-light: #F2C4B2;
+
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -369,9 +374,9 @@
     gap: 8px;
     letter-spacing: 0.01em;
   }
-  .btn-next:hover { background: #2D2D4E; transform: translateY(-1px); }
+  .btn-next:hover { background: #333333; transform: translateY(-1px); }
   .btn-submit {
-    background: var(--green);
+    background: #CC4E28;
     color: white;
     border: none;
     font-family: 'DM Sans', sans-serif;
@@ -385,7 +390,7 @@
     align-items: center;
     gap: 8px;
   }
-  .btn-submit:hover { background: #245C42; transform: translateY(-1px); }
+  .btn-submit:hover { background: #A83A1A; transform: translateY(-1px); }
 
   /* STEP COUNT */
   .step-counter {
@@ -400,7 +405,7 @@
   }
   .success-icon {
     width: 72px; height: 72px;
-    background: var(--green);
+    background: #CC4E28;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -473,9 +478,17 @@
 <body>
 
 <div class="header">
-  <div>
-    <div class="header-title">Mapeamento Financeiro</div>
-    <div class="header-sub">Planejamento personalizado e confidencial</div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <div style="background:#fff;border-radius:8px;padding:5px 10px;display:flex;align-items:center;">
+      <img src="data:image/jpeg;base64,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" alt="WFLOW" style="height:36px;object-fit:contain;" onerror="this.style.display='none';document.getElementById('headerText').style.display='block'">
+    </div>
+    <div id="headerText" style="display:none;">
+      <div class="header-title">WFLOW</div>
+    </div>
+  </div>
+  <div style="text-align:right;">
+    <div class="header-sub" style="color:rgba(255,255,255,0.5);font-size:0.75rem;">Mapeamento Financeiro</div>
+    <div class="header-sub" style="color:var(--gold);font-size:0.7rem;font-weight:500;">Credenciada à XP Investimentos</div>
   </div>
 </div>
 
@@ -496,6 +509,67 @@ const STEPS = [
 
 let currentStep = 0;
 let formData = {};
+let showingWelcome = true;
+
+function renderWelcome() {
+  document.getElementById('progressBar').style.display = 'none';
+  return `
+    <div class="section-card" style="padding:0;overflow:hidden;">
+      <!-- Hero banner -->
+      <div style="background:var(--wflow-dark);padding:48px 40px 40px;text-align:center;position:relative;">
+        <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(200,168,75,0.08) 0%,transparent 60%);pointer-events:none;"></div>
+        <h1 style="font-family:'Playfair Display',serif;color:#FFFFFF;font-size:1.9rem;font-weight:700;line-height:1.25;margin-bottom:12px;">
+          Mapeamento Financeiro
+        </h1>
+      </div>
+
+      <!-- Conteúdo -->
+      <div style="padding:40px;">
+        <p style="font-size:1.05rem;color:var(--dark);line-height:1.75;margin-bottom:24px;">
+          Olá! Seja bem-vindo ao seu <strong>Mapeamento Financeiro Personalizado</strong>. Este formulário foi desenvolvido para que seu assessor possa compreender de forma completa a sua realidade financeira — renda, despesas, patrimônio, objetivos e sonhos de vida.
+        </p>
+
+        <div style="background:#F8F6F0;border-left:4px solid var(--gold);border-radius:0 10px 10px 0;padding:20px 22px;margin-bottom:24px;">
+          <p style="font-size:0.95rem;color:var(--dark);line-height:1.7;">
+            Com base nas suas respostas, será construída uma <strong>análise detalhada da sua vida financeira</strong>, considerando seus objetivos de curto, médio e longo prazo — da formação de reservas à aposentadoria planejada — sempre aliada a uma carteira de investimentos <strong>aderente ao seu perfil de investidor</strong>.
+          </p>
+        </div>
+
+        <p style="font-size:0.95rem;color:var(--dark);line-height:1.7;margin-bottom:24px;">
+          Quanto mais completas forem suas respostas, mais precisa e eficiente será a estratégia elaborada para você. Se não souber algum valor exato, estimativas são bem-vindas.
+        </p>
+
+        <!-- Destaques -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:32px;">
+          ${[
+            ['🔒','Sigilo total','Suas informações são tratadas com absoluta confidencialidade.'],
+            ['🎯','Foco nos seus objetivos','O planejamento é construído em torno do que importa para você.'],
+            ['📊','Análise personalizada','Estratégias alinhadas ao seu perfil e momento de vida.'],
+            ['🤝','Acompanhamento contínuo','Seu assessor estará ao lado em cada etapa do caminho.'],
+          ].map(([icon,title,desc]) => `
+            <div style="background:#F8F6F0;border:1.5px solid var(--border);border-radius:12px;padding:16px;">
+              <div style="font-size:1.4rem;margin-bottom:6px;">${icon}</div>
+              <div style="font-size:0.82rem;font-weight:700;color:var(--dark);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.03em;">${title}</div>
+              <div style="font-size:0.8rem;color:var(--gray);line-height:1.5;">${desc}</div>
+            </div>`).join('')}
+        </div>
+
+        <p style="font-size:0.82rem;color:var(--gray);margin-bottom:28px;line-height:1.6;">
+          O preenchimento leva em média <strong>10 a 15 minutos</strong> e está dividido em <strong>5 etapas</strong>: dados pessoais, estrutura familiar, objetivos, rendas e despesas, e patrimônio.
+        </p>
+
+        <button class="btn-next" onclick="startForm()" style="width:100%;justify-content:center;font-size:1rem;padding:16px;">
+          Começar meu mapeamento →
+        </button>
+      </div>
+    </div>`;
+}
+
+function startForm() {
+  showingWelcome = false;
+  document.getElementById('progressBar').style.display = 'flex';
+  rerenderSection();
+}
 
 // ---- Render progress ----
 function renderProgress() {
@@ -1216,6 +1290,13 @@ function maskPhone(el) {
 function saveCurrentStep() {
   if(currentStep===0) collectStep0();
   if(currentStep===2) collectStep2();
+  // Always try to collect step2 fields if they're present (in case user is on step2)
+  const idadeEl = document.getElementById('idadeAposent');
+  const rendaEl = document.getElementById('rendaAposent');
+  const expectEl = document.getElementById('expectativa');
+  if(idadeEl && idadeEl.value) formData.idadeAposent = idadeEl.value;
+  if(rendaEl && rendaEl.value) formData.rendaAposent = rendaEl.value;
+  if(expectEl && expectEl.value) formData.expectativa = expectEl.value;
 }
 
 function nextStep() {
@@ -1254,14 +1335,19 @@ function submitForm() {
   const d = formData;
   let msg = '';
 
-  msg += '🗂️ *MAPEAMENTO FINANCEIRO*\n';
-  msg += '━━━━━━━━━━━━━━━━━━━━━━\n\n';
+  function fmtDate(v) {
+    if(!v) return '—';
+    const [y,m,d] = v.split('-');
+    return d ? `${d}/${m}/${y}` : v;
+  }
 
-  // Dados pessoais
-  msg += '👤 *DADOS PESSOAIS*\n';
+  msg += '*MAPEAMENTO FINANCEIRO*\n';
+  msg += '========================\n\n';
+
+  msg += '*DADOS PESSOAIS*\n';
   msg += `• Nome: ${d.nome||'—'}\n`;
   msg += `• CPF: ${d.cpf||'—'}\n`;
-  msg += `• Nascimento: ${d.nascimento||'—'}\n`;
+  msg += `• Nascimento: ${fmtDate(d.nascimento)}\n`;
   msg += `• Celular: ${d.celular||'—'}\n`;
   msg += `• E-mail: ${d.email||'—'}\n`;
   msg += `• Profissão: ${d.profissao||'—'}\n`;
@@ -1272,22 +1358,20 @@ function submitForm() {
   msg += `• Esporte: ${d.esporte||'—'}\n`;
   msg += `• Hobby: ${d.hobby||'—'}\n\n`;
 
-  // Família
-  msg += '👨‍👩‍👧 *ESTRUTURA FAMILIAR*\n';
+  msg += '*ESTRUTURA FAMILIAR*\n';
   if(d.familiares && d.familiares.length > 0) {
     d.familiares.forEach((f,i) => {
-      msg += `• Membro ${i+1}: ${f.nome||'—'} | ${f.parentesco||'—'} | Nasc: ${f.nascimento||'—'} | Dep. IR: ${f.dependenteIR||'—'}\n`;
+      msg += `• Membro ${i+1}: ${f.nome||'—'} | ${f.parentesco||'—'} | Nasc: ${fmtDate(f.nascimento)} | Dep. IR: ${f.dependenteIR||'—'}\n`;
     });
   } else { msg += '• Nenhum membro informado\n'; }
   msg += '\n';
 
-  // Objetivos
-  msg += '🎯 *OBJETIVOS*\n';
+  msg += '*OBJETIVOS*\n';
   msg += `• Aposentadoria aos: ${d.idadeAposent||'—'} anos\n`;
-  msg += `• Renda desejada: ${formatMoney(d.rendaAposent)}/mês\n`;
+  msg += `• Renda desejada: ${formatMoney(d.rendaAposent)}/mes\n`;
   msg += `• Expectativa de vida: ${d.expectativa||'—'} anos\n`;
   if(d.objetivos && d.objetivos.length > 0) {
-    msg += `• Objetivos secundários:\n`;
+    msg += `• Objetivos secundarios:\n`;
     d.objetivos.forEach((o,i) => {
       msg += `  ${i+1}. ${o.nome||'—'} | Idade: ${o.idade||'—'} | ${o.frequencia||'—'}`;
       if(o.frequencia==='Parcelado') msg += ` | Parcela: ${formatMoney(o.valorParcela)} x ${o.anos||'—'} anos`;
@@ -1297,8 +1381,7 @@ function submitForm() {
   }
   msg += '\n';
 
-  // Rendas
-  msg += '📈 *RENDAS MENSAIS*\n';
+  msg += '*RENDAS MENSAIS*\n';
   if(d.rendas && d.rendas.length > 0) {
     d.rendas.forEach((r,i) => {
       msg += `• ${r.responsavel||'—'} | ${r.categoria||'—'} | ${formatMoney(r.valor)}\n`;
@@ -1306,8 +1389,7 @@ function submitForm() {
   } else { msg += '• Nenhuma renda informada\n'; }
   msg += '\n';
 
-  // Despesas
-  msg += '📉 *DESPESAS MENSAIS*\n';
+  msg += '*DESPESAS MENSAIS*\n';
   if(d.despesas && d.despesas.length > 0) {
     d.despesas.forEach((e,i) => {
       msg += `• ${e.responsavel||'—'} | ${e.categoria||'—'} | ${formatMoney(e.valor)}\n`;
@@ -1315,8 +1397,7 @@ function submitForm() {
   } else { msg += '• Nenhuma despesa informada\n'; }
   msg += '\n';
 
-  // Investimentos nacionais
-  msg += '🇧🇷 *INVESTIMENTOS NACIONAIS*\n';
+  msg += '*INVESTIMENTOS NACIONAIS*\n';
   if(d.invNacionais && d.invNacionais.length > 0) {
     d.invNacionais.forEach((inv,i) => {
       msg += `• ${inv.tipo||'—'} | ${inv.inst||'—'} | ${formatMoney(inv.valor)} | Ref: ${inv.data||'—'}\n`;
@@ -1324,29 +1405,26 @@ function submitForm() {
   } else { msg += '• Nenhum informado\n'; }
   msg += '\n';
 
-  // Investimentos globais
-  msg += '🌎 *INVESTIMENTOS GLOBAIS*\n';
+  msg += '*INVESTIMENTOS GLOBAIS*\n';
   if(d.invGlobais && d.invGlobais.length > 0) {
     d.invGlobais.forEach((inv,i) => {
       msg += `• ${inv.inst||'—'} | US$ ${inv.valor||'—'} | Ref: ${inv.data||'—'}\n`;
       const cats = ['CDs','Mutual Funds','Treasury','Bonds','Equities','Cash','Structured Notes'];
       const pcts = cats.filter(c=>inv[c]).map(c=>`${c}: ${inv[c]}%`).join(', ');
-      if(pcts) msg += `  Alocação: ${pcts}\n`;
+      if(pcts) msg += `  Alocacao: ${pcts}\n`;
     });
   } else { msg += '• Nenhum informado\n'; }
   msg += '\n';
 
-  // Imóveis
-  msg += '🏠 *IMÓVEIS*\n';
+  msg += '*IMOVEIS*\n';
   if(d.imoveis && d.imoveis.length > 0) {
     d.imoveis.forEach((im,i) => {
-      msg += `• ${im.local||'—'} | ${formatMoney(im.valor)} | Financiado: ${im.financiado||'—'} | Participação: ${im.participacao||'—'}%\n`;
+      msg += `• ${im.local||'—'} | ${formatMoney(im.valor)} | Financiado: ${im.financiado||'—'} | Participacao: ${im.participacao||'—'}%\n`;
     });
   } else { msg += '• Nenhum informado\n'; }
   msg += '\n';
 
-  // Veículos
-  msg += '🚗 *VEÍCULOS*\n';
+  msg += '*VEICULOS*\n';
   if(d.veiculos && d.veiculos.length > 0) {
     d.veiculos.forEach((v,i) => {
       msg += `• ${v.desc||'—'} (${v.tipo||'—'}) | ${formatMoney(v.valor)} | Financiado: ${v.financiado||'—'}\n`;
@@ -1354,16 +1432,15 @@ function submitForm() {
   } else { msg += '• Nenhum informado\n'; }
   msg += '\n';
 
-  // Participações
-  msg += '🏢 *PARTICIPAÇÕES SOCIETÁRIAS*\n';
+  msg += '*PARTICIPACOES SOCIETARIAS*\n';
   if(d.participacoes && d.participacoes.length > 0) {
     d.participacoes.forEach((p,i) => {
       msg += `• ${p.nome||'—'} | CNPJ: ${p.cnpj||'—'} | ${formatMoney(p.valor)} | ${p.participacao||'—'}%\n`;
     });
   } else { msg += '• Nenhuma informada\n'; }
 
-  msg += '\n━━━━━━━━━━━━━━━━━━━━━━\n';
-  msg += '✅ Mapeamento financeiro concluído.';
+  msg += '\n========================\n';
+  msg += 'Mapeamento financeiro concluido.';
 
   const phone = '5511999250282';
   const url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
@@ -1379,8 +1456,9 @@ function submitForm() {
 }
 
 // ---- Init ----
+document.getElementById('progressBar').style.display = 'none';
+document.getElementById('formContainer').innerHTML = renderWelcome();
 renderProgress();
-rerenderSection();
 </script>
 </body>
 </html>
