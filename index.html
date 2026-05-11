@@ -166,7 +166,7 @@
   }
 
   /* FORM ELEMENTS */
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
   .form-grid.full { grid-template-columns: 1fr; }
   .form-grid.thirds { grid-template-columns: 1fr 1fr 1fr; }
 
@@ -618,7 +618,7 @@ function renderStep0() {
           <input type="text" id="nome" placeholder="Seu nome completo" value="${formData.nome||''}">
         </div>
         <div class="field">
-          <label>CPF <span class="req">*</span><span class="hint">Somente números</span></label>
+          <label>CPF <span class="req">*</span></label>
           <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" value="${formData.cpf||''}" oninput="maskCPF(this)">
         </div>
         <div class="field">
@@ -784,7 +784,7 @@ function renderStep2() {
           <input type="number" id="idadeAposent" placeholder="Ex: 65" min="40" max="90" value="${formData.idadeAposent||''}">
         </div>
         <div class="field">
-          <label>Renda mensal desejada <span class="req">*</span><span class="hint">Valor em R$</span></label>
+          <label>Renda mensal desejada (R$) <span class="req">*</span></label>
           <div class="money-wrap">
             <span class="money-prefix">R$</span>
             <input type="number" id="rendaAposent" placeholder="5.000" value="${formData.rendaAposent||''}">
