@@ -197,7 +197,7 @@
   }
 
   input[type="text"], input[type="email"], input[type="tel"],
-  input[type="date"], input[type="number"], select, textarea {
+  input[type="date"], input[type="month"], input[type="number"], select, textarea {
     border: 1.5px solid var(--border);
     border-radius: 10px;
     padding: 12px 14px;
@@ -208,6 +208,12 @@
     transition: border-color 0.2s, box-shadow 0.2s;
     outline: none;
     width: 100%;
+    text-align: left;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input[type="date"]::-webkit-date-and-time-value {
+    text-align: left;
   }
   input:focus, select:focus, textarea:focus {
     border-color: var(--gold);
@@ -625,7 +631,15 @@ function renderStep0() {
         </div>
         <div class="field">
           <label>Data de nascimento <span class="req">*</span></label>
-          <input type="date" id="nascimento" value="${formData.nascimento||''}">
+          <div style="display:grid;grid-template-columns:1fr 2fr 1fr;gap:8px;">
+            <input type="number" id="nascDia" placeholder="Dia" min="1" max="31" value="${formData.nascDia||''}" style="text-align:center;">
+            <select id="nascMes">
+              <option value="">Mês</option>
+              ${['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
+                .map((m,i) => `<option value="${String(i+1).padStart(2,'0')}" ${formData.nascMes===String(i+1).padStart(2,'0')?'selected':''}>${m}</option>`).join('')}
+            </select>
+            <input type="number" id="nascAno" placeholder="Ano" min="1900" max="2024" value="${formData.nascAno||''}" style="text-align:center;">
+          </div>
         </div>
         <div class="field">
           <label>Celular <span class="req">*</span></label>
@@ -738,7 +752,15 @@ function renderFamiliar(i, f={}) {
         </div>
         <div class="field">
           <label>Data de nascimento</label>
-          <input type="date" value="${f.nascimento||''}" onchange="updateFamiliar(${i},'nascimento',this.value)">
+          <div style="display:grid;grid-template-columns:1fr 2fr 1fr;gap:8px;">
+            <input type="number" placeholder="Dia" min="1" max="31" value="${f.nascDia||''}" onchange="updateFamiliar(${i},'nascDia',this.value);updateFamiliarNasc(${i})" style="text-align:center;">
+            <select onchange="updateFamiliar(${i},'nascMes',this.value);updateFamiliarNasc(${i})">
+              <option value="">Mês</option>
+              ${['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
+                .map((m,idx) => `<option value="${String(idx+1).padStart(2,'0')}" ${f.nascMes===String(idx+1).padStart(2,'0')?'selected':''}>${m}</option>`).join('')}
+            </select>
+            <input type="number" placeholder="Ano" min="1900" max="2024" value="${f.nascAno||''}" onchange="updateFamiliar(${i},'nascAno',this.value);updateFamiliarNasc(${i})" style="text-align:center;">
+          </div>
         </div>
         <div class="field span2">
           <label>Dependente para Imposto de Renda?</label>
@@ -759,6 +781,12 @@ function addFamiliar() {
 function removeFamiliar(i) {
   formData.familiares.splice(i,1);
   rerenderSection();
+}
+function updateFamiliarNasc(i) {
+  const f = formData.familiares[i] || {};
+  if(f.nascDia && f.nascMes && f.nascAno) {
+    formData.familiares[i].nascimento = `${f.nascDia}/${f.nascMes}/${f.nascAno}`;
+  }
 }
 function updateFamiliar(i,field,val) {
   if (!formData.familiares[i]) formData.familiares[i]={};
@@ -1277,7 +1305,11 @@ function updateParticipacao(i,f,v) { if(!formData.participacoes[i]) formData.par
 function collectStep0() {
   formData.nome = document.getElementById('nome')?.value || '';
   formData.cpf = document.getElementById('cpf')?.value || '';
-  formData.nascimento = document.getElementById('nascimento')?.value || '';
+  formData.nascDia = document.getElementById('nascDia')?.value || '';
+  formData.nascMes = document.getElementById('nascMes')?.value || '';
+  formData.nascAno = document.getElementById('nascAno')?.value || '';
+  formData.nascimento = formData.nascDia && formData.nascMes && formData.nascAno
+    ? `${formData.nascDia}/${formData.nascMes}/${formData.nascAno}` : '';
   formData.celular = document.getElementById('celular')?.value || '';
   formData.email = document.getElementById('email')?.value || '';
   formData.profissao = document.getElementById('profissao')?.value || '';
