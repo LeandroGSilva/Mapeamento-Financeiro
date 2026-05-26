@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mapeamento Financeiro</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
   :root {
     --cream: #F5F4F2;
@@ -1503,20 +1504,40 @@ function submitForm() {
   msg += '\n========================\n';
   msg += 'Mapeamento financeiro concluido.';
 
-  const phone = '5511999250282';
-  const url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
-  window.open(url, '_blank');
+  const urlParams = new URLSearchParams(window.location.search);
+  const assessorNome = urlParams.get('nome') ? decodeURIComponent(urlParams.get('nome')) : 'Assessor';
+  const assessorEmail = urlParams.get('email') ? decodeURIComponent(urlParams.get('email')) : 'leandro_wrx@hotmail.com';
 
+  // Mostrar tela de envio
   document.getElementById('formContainer').innerHTML = `
     <div class="section-card success-card">
-      <div class="success-icon">✓</div>
-      <h2 class="success-title">Mapeamento enviado!</h2>
-      <p class="success-desc">O WhatsApp foi aberto com todas as suas informações organizadas e já enviadas para o seu assessor.<br><br>Em breve você receberá um retorno. 😊</p>
+      <div class="success-icon" id="successIcon" style="background:#888;font-size:1.4rem;">⏳</div>
+      <h2 class="success-title">Enviando...</h2>
+      <p class="success-desc" id="successMsg">Aguarde enquanto enviamos seu mapeamento.</p>
     </div>`;
   document.getElementById('progressBar').innerHTML = '';
+
+  // Enviar por e-mail via EmailJS
+  emailjs.send('service_aftlf37', 'template_ts8pt1n', {
+    assessor_email: assessorEmail,
+    assessor_nome: assessorNome,
+    cliente_nome: d.nome || 'Cliente',
+    mapeamento: msg.replace(/\*/g, '').replace(/========================/g, '─────────────────────')
+  }).then(() => {
+    document.getElementById('successIcon').style.background = '#CC4E28';
+    document.getElementById('successIcon').textContent = '✓';
+    document.querySelector('.success-title').textContent = 'Mapeamento enviado!';
+    document.getElementById('successMsg').innerHTML = `Suas informações foram enviadas com sucesso para <strong>${assessorNome}</strong>.<br><br>Em breve você receberá um retorno. 😊`;
+  }).catch(() => {
+    document.getElementById('successIcon').style.background = '#C1121F';
+    document.getElementById('successIcon').textContent = '!';
+    document.querySelector('.success-title').textContent = 'Erro ao enviar';
+    document.getElementById('successMsg').innerHTML = `Ocorreu um problema ao enviar seu mapeamento. Por favor, entre em contato diretamente com seu assessor.`;
+  });
 }
 
 // ---- Init ----
+emailjs.init('G-4Q7swJM5qv_XQC2');
 document.getElementById('progressBar').style.display = 'none';
 document.getElementById('formContainer').innerHTML = renderWelcome();
 renderProgress();
