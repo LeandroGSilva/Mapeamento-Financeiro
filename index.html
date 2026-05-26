@@ -563,9 +563,20 @@ function renderWelcome() {
             </div>`).join('')}
         </div>
 
-        <p style="font-size:0.82rem;color:var(--gray);margin-bottom:28px;line-height:1.6;">
+        <p style="font-size:0.82rem;color:var(--gray);margin-bottom:20px;line-height:1.6;">
           O preenchimento leva em média <strong>10 a 15 minutos</strong> e está dividido em <strong>5 etapas</strong>: dados pessoais, estrutura familiar, objetivos, rendas e despesas, e patrimônio.
         </p>
+
+        <!-- LGPD -->
+        <div style="background:#F0F4FF;border:1.5px solid #C5D0F0;border-radius:12px;padding:16px 18px;margin-bottom:28px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span style="font-size:1.1rem;">🔐</span>
+            <span style="font-size:0.8rem;font-weight:700;color:#2A3A6B;text-transform:uppercase;letter-spacing:0.04em;">Privacidade & LGPD</span>
+          </div>
+          <p style="font-size:0.8rem;color:#3A4A7A;line-height:1.6;margin:0;">
+            Suas informações são coletadas exclusivamente para fins de elaboração do seu planejamento financeiro, em conformidade com a <strong>Lei Geral de Proteção de Dados (Lei nº 13.709/2018 — LGPD)</strong>. Os dados fornecidos serão tratados com sigilo absoluto, não serão compartilhados com terceiros sem seu consentimento e serão utilizados somente pela equipe responsável pelo seu atendimento. Você pode solicitar a exclusão dos seus dados a qualquer momento.
+          </p>
+        </div>
 
         <button class="btn-next" onclick="startForm()" style="width:100%;justify-content:center;font-size:1rem;padding:16px;">
           Começar meu mapeamento →
