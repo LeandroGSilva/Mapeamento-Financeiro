@@ -61,13 +61,13 @@
   .progress-bar-wrapper {
     background: var(--dark);
     width: 100%;
+    overflow: hidden;
   }
   .progress-bar {
-    padding: 0 40px 28px;
+    padding: 0 24px 24px;
     display: flex;
-    gap: 0;
     align-items: center;
-    max-width: 500px;
+    max-width: 360px;
     margin: 0 auto;
   }
   .step-item {
@@ -526,7 +526,7 @@ let formData = {};
 let showingWelcome = true;
 
 function renderWelcome() {
-  document.getElementById('progressBar').parentElement.style.display = 'none';
+  document.getElementById('progressBar').parentElement.style.visibility = 'hidden'; document.getElementById('progressBar').parentElement.style.height = '0';
   return `
     <div class="section-card" style="padding:0;overflow:hidden;">
       <!-- Hero banner -->
@@ -592,7 +592,7 @@ function renderWelcome() {
 
 function startForm() {
   showingWelcome = false;
-  document.getElementById('progressBar').parentElement.style.display = 'flex';
+  document.getElementById('progressBar').parentElement.style.visibility = 'visible'; document.getElementById('progressBar').parentElement.style.height = 'auto';
   rerenderSection();
 }
 
@@ -1532,7 +1532,7 @@ function submitForm() {
       <p class="success-desc" id="successMsg">Aguarde enquanto enviamos seu mapeamento.</p>
     </div>`;
   document.getElementById('progressBar').innerHTML = '';
-  document.getElementById('progressBar').parentElement.style.display = 'none';
+  document.getElementById('progressBar').parentElement.style.visibility = 'hidden'; document.getElementById('progressBar').parentElement.style.height = '0';
 
   // Enviar por e-mail via EmailJS
   emailjs.send('service_aftlf37', 'template_ts8pt1n', {
@@ -1555,7 +1555,7 @@ function submitForm() {
 
 // ---- Init ----
 emailjs.init('G-4Q7swJM5qv_XQC2');
-document.getElementById('progressBar').parentElement.style.display = 'none';
+document.getElementById('progressBar').parentElement.style.visibility = 'hidden'; document.getElementById('progressBar').parentElement.style.height = '0';
 document.getElementById('formContainer').innerHTML = renderWelcome();
 renderProgress();
 </script>
