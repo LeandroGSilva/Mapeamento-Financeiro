@@ -58,12 +58,21 @@
   }
 
   /* PROGRESS */
-  .progress-bar {
+  .progress-bar-wrapper {
     background: var(--dark);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .progress-bar {
     padding: 0 40px 28px;
     display: flex;
     gap: 0;
     align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 480px;
+    box-sizing: border-box;
   }
   .step-item {
     display: flex;
@@ -501,7 +510,7 @@
   </div>
 </div>
 
-<div class="progress-bar" id="progressBar"></div>
+<div class="progress-bar-wrapper"><div class="progress-bar" id="progressBar"></div></div>
 
 <div class="main">
   <div id="formContainer"></div>
@@ -521,7 +530,7 @@ let formData = {};
 let showingWelcome = true;
 
 function renderWelcome() {
-  document.getElementById('progressBar').style.display = 'none';
+  document.getElementById('progressBar').parentElement.style.display = 'none';
   return `
     <div class="section-card" style="padding:0;overflow:hidden;">
       <!-- Hero banner -->
@@ -587,7 +596,7 @@ function renderWelcome() {
 
 function startForm() {
   showingWelcome = false;
-  document.getElementById('progressBar').style.display = 'flex';
+  document.getElementById('progressBar').parentElement.style.display = 'flex';
   rerenderSection();
 }
 
@@ -1527,6 +1536,7 @@ function submitForm() {
       <p class="success-desc" id="successMsg">Aguarde enquanto enviamos seu mapeamento.</p>
     </div>`;
   document.getElementById('progressBar').innerHTML = '';
+  document.getElementById('progressBar').parentElement.style.display = 'none';
 
   // Enviar por e-mail via EmailJS
   emailjs.send('service_aftlf37', 'template_ts8pt1n', {
@@ -1549,7 +1559,7 @@ function submitForm() {
 
 // ---- Init ----
 emailjs.init('G-4Q7swJM5qv_XQC2');
-document.getElementById('progressBar').style.display = 'none';
+document.getElementById('progressBar').parentElement.style.display = 'none';
 document.getElementById('formContainer').innerHTML = renderWelcome();
 renderProgress();
 </script>
