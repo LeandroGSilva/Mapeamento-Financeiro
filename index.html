@@ -599,15 +599,17 @@ function startForm() {
 // ---- Render progress ----
 function renderProgress() {
   const bar = document.getElementById('progressBar');
-  let html = '';
-  STEPS.forEach((s, i) => {
+  bar.innerHTML = STEPS.map((s, i) => {
     let cls = i < currentStep ? 'done' : i === currentStep ? 'active' : '';
-    html += `<div class="step-dot ${cls}"><span>${s.icon}</span></div>`;
-    if (i < STEPS.length - 1) {
-      html += `<div class="step-line ${i < currentStep ? 'done' : ''}"></div>`;
-    }
-  });
-  bar.innerHTML = html;
+    let line = i < STEPS.length - 1 ? `<div class="step-line ${i < currentStep ? 'done' : ''}"></div>` : '';
+    return `
+      <div class="step-item">
+        <div class="step-dot ${cls}">
+          <span>${s.icon}</span>
+        </div>
+        ${line}
+      </div>`;
+  }).join('');
 }
 
 // ---- Nav Buttons ----
