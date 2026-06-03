@@ -62,6 +62,7 @@
     background: var(--dark);
     width: 100%;
     overflow: hidden;
+    display: none;
   }
   .progress-bar {
     padding: 0 24px 24px;
@@ -526,7 +527,7 @@ let formData = {};
 let showingWelcome = true;
 
 function renderWelcome() {
-  document.getElementById('progressBar').parentElement.style.visibility = 'hidden'; document.getElementById('progressBar').parentElement.style.height = '0';
+  document.getElementById('progressBar').parentElement.style.display = 'none';
   return `
     <div class="section-card" style="padding:0;overflow:hidden;">
       <!-- Hero banner -->
@@ -592,7 +593,7 @@ function renderWelcome() {
 
 function startForm() {
   showingWelcome = false;
-  document.getElementById('progressBar').parentElement.style.visibility = 'visible'; document.getElementById('progressBar').parentElement.style.height = 'auto';
+  document.getElementById('progressBar').parentElement.style.display = 'block';
   rerenderSection();
 }
 
@@ -1532,7 +1533,7 @@ function submitForm() {
       <p class="success-desc" id="successMsg">Aguarde enquanto enviamos seu mapeamento.</p>
     </div>`;
   document.getElementById('progressBar').innerHTML = '';
-  document.getElementById('progressBar').parentElement.style.visibility = 'hidden'; document.getElementById('progressBar').parentElement.style.height = '0';
+  document.getElementById('progressBar').parentElement.style.display = 'none';
 
   // Enviar por e-mail via EmailJS
   emailjs.send('service_aftlf37', 'template_ts8pt1n', {
@@ -1555,7 +1556,7 @@ function submitForm() {
 
 // ---- Init ----
 emailjs.init('G-4Q7swJM5qv_XQC2');
-document.getElementById('progressBar').parentElement.style.visibility = 'hidden'; document.getElementById('progressBar').parentElement.style.height = '0';
+document.getElementById('progressBar').parentElement.style.display = 'none';
 document.getElementById('formContainer').innerHTML = renderWelcome();
 renderProgress();
 </script>
