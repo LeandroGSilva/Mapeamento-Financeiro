@@ -63,21 +63,31 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    align-items: center;
   }
   .progress-bar {
-    padding: 0 40px 28px;
+    padding: 0 20px 28px;
     display: flex;
     gap: 0;
     align-items: center;
     justify-content: center;
     width: 100%;
-    max-width: 480px;
+    max-width: 320px;
     box-sizing: border-box;
   }
   .step-item {
     display: flex;
     align-items: center;
     flex: 1;
+    justify-content: center;
+  }
+  .step-item:first-child {
+    justify-content: flex-start;
+    flex: 0 0 auto;
+  }
+  .step-item:last-child {
+    justify-content: flex-end;
+    flex: 0 0 auto;
   }
   .step-dot {
     width: 28px;
